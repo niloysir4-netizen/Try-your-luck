@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF Lucky Royale Giveaway</title>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #ff4500;
+            text-shadow: 0 0 10px #ff4500;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Container for the Wheel */
+        .wheel-box {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Red Arrow Pointer */
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            z-index: 10;
+            filter: drop-shadow(0 0 5px red);
+        }
+
+        /* Fire Glow Effect behind the wheel */
+        .wheel-box::before {
+            content: '';
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            background: radial-gradient(circle, rgba(255,69,0,0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        /* The actual Wheel Image */
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #333;
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            z-index: 5;
+        }
+
+        /* Result Text */
+        #result {
+            margin-top: 25px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+            height: 30px;
+            text-shadow: 0 0 10px #ff4500;
+        }
+
+        /* Spin Button */
+        .spin-btn {
+            margin-top: 30px;
+            padding: 12px 35px;
+            font-size: 20px;
+            background: linear-gradient(180deg, #ff8c00 0%, #ff4500 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.5);
+            transition: 0.3s;
+        }
+
+        .spin-btn:active {
+            transform: scale(0.9);
+        }
+
+        .spin-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔥 FF LUCKY GIVEAWAY 🔥</h1>
+
+    <div class="wheel-box">
+        <svg class="pointer" viewBox="0 0 100 100">
+            <path d="M50 90 L10 20 L90 20 Z" fill="red" stroke="white" stroke-width="5"/>
+        </svg>
+
+        <img id="wheel" src="https://i.ibb.co/Xrnf5SgL/file-00000000c4ac720885d038360cda230e.png" alt="Lucky Wheel">
+    </div>
+
+    <div id="result">Kopal Porikkha Koro!</div>
+
+    <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN NOW</button>
+
+    <script>
+        let currentRotation = 0;
+        const wheel = document.getElementById('wheel');
+        const btn = document.getElementById('spinBtn');
+        const resultText = document.getElementById('result');
+
+        // Rewards sequence based on the image (clockwise starting from top 50 Diamonds)
+        const rewards = [
+            "50 DIAMONDS 💎", 
+            "25 DIAMONDS 💎", 
+            "10 TAKA 💰", 
+            "BETTER LUCK NEXT TIME 💀", 
+            "RISK ZONE ⚠️", 
+            "SURPRISE REWARD 🎁", 
+            "CUSTOM ROOM 🎫", 
+            "100 DIAMONDS 💎"
+        ];
+
+        function spin() {
+            btn.disabled = true;
+            resultText.innerText = "Spinning...";
+
+            // At least 5 full circles (1800 deg) + random angle
+            const randomDegree = Math.floor(Math.random() * 360);
+            const totalRotation = 1800 + randomDegree;
+            
+            currentRotation += totalRotation;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            // Wait 4 seconds for animation
+            setTimeout(() => {
+                btn.disabled = false;
+                
+                // Calculate which slice landed at the top (pointer is at 0 degrees)
+                const actualDeg = currentRotation % 360;
+                // Each slice is 45 degrees (360 / 8)
+                const sliceIndex = Math.floor(((360 - (actualDeg % 360)) % 360) / 45);
+                
+                resultText.innerText = "Winner: " + rewards[sliceIndex];
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
