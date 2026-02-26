@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF Lucky Royale Giveaway</title>
+    <style>
+        :root {
+            --fire-color: #ff4500;
+            --gold: #ffd700;
+        }
+
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--fire-color);
+            margin-bottom: 20px;
+        }
+
+        /* Wheel Container with Fire Effect */
+        .main-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            box-shadow: 0 0 50px var(--fire-color), inset 0 0 20px #000;
+            border: 8px solid #333;
+        }
+
+        /* Pointer at the top */
+        .pointer {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            z-index: 100;
+            filter: drop-shadow(0 0 5px red);
+        }
+
+        /* The Spin Image (Tomar upload kora chobi) */
+        #wheel-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1);
+        }
+
+        /* Spin Button */
+        .spin-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #ff8c00, #ff4500);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4);
+            text-transform: uppercase;
+            transition: 0.2s;
+        }
+
+        .spin-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Result Popup */
+        #result-display {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            height: 30px;
+            color: var(--gold);
+            text-shadow: 0 0 5px #000;
+        }
+
+        /* Fire Particles Animation (Subtle) */
+        .fire-bg {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, rgba(255, 69, 0, 0.3), transparent);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔥 Lucky Royale 🔥</h1>
+
+    <div class="main-container">
+        <svg class="pointer" viewBox="0 0 50 50">
+            <path d="M25 50 L5 10 L45 10 Z" fill="red" stroke="white" stroke-width="2"/>
+        </svg>
+
+        <img src="https://i.ibb.co/Xrnf5SgL/file-00000000c4ac720885d038360cda230e.png" id="wheel-img" alt="Lucky Wheel">
+    </div>
+
+    <div id="result-display">Ready to Spin?</div>
+
+    <button class="spin-btn" onclick="startSpin()">Spin Wheel</button>
+
+    <div class="fire-bg"></div>
+
+    <script>
+        let isSpinning = false;
+        let currentDegree = 0;
+
+        // Reward Positions (Adjusted for your 8-segment wheel)
+        const rewards = [
+            { name: "50 DIAMONDS", minDeg: 337.5, maxDeg: 22.5 },
+            { name: "100 DIAMONDS", minDeg: 292.5, maxDeg: 337.5 },
+            { name: "CUSTOM ROOM", minDeg: 247.5, maxDeg: 292.5 },
+            { name: "SURPRISE REWARD", minDeg: 202.5, maxDeg: 247.5 },
+            { name: "RISK ZONE ⚠️", minDeg: 157.5, maxDeg: 202.5 },
+            { name: "BETTER LUCK NEXT TIME", minDeg: 112.5, maxDeg: 157.5 },
+            { name: "10 TAKA", minDeg: 67.5, maxDeg: 112.5 },
+            { name: "25 DIAMONDS", minDeg: 22.5, maxDeg: 67.5 }
+        ];
+
+        function startSpin() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            document.getElementById('result-display').innerText = "Spinning...";
+            
+            // Generate random spin (at least 5 full rotations)
+            const randomExtra = Math.floor(Math.random() * 360);
+            const totalSpin = 1800 + randomExtra; 
+            currentDegree += totalSpin;
+
+            const wheel = document.getElementById('wheel-img');
+            wheel.style.transform = `rotate(${currentDegree}deg)`;
+
+            // Wait for animation to finish (5 seconds)
+            setTimeout(() => {
+                isSpinning = false;
+                calculateWinner(currentDegree % 360);
+            }, 5000);
+        }
+
+        function calculateWinner(deg) {
+            // Adjust degree to pointer position (Top center is 0)
+            let actualDeg = (360 - deg) % 360;
+            
+            let winner = "Better Luck!";
+            
+            // Simple logic to find which segment the pointer is on
+            for (let r of rewards) {
+                if (r.name === "50 DIAMONDS") {
+                    if (actualDeg >= 337.5 || actualDeg < 22.5) {
+                        winner = r.name;
+                        break;
+                    }
+                } else if (actualDeg >= r.minDeg && actualDeg < r.maxDeg) {
+                    winner = r.name;
+                    break;
+                }
+            }
+            
+            document.getElementById('result-display').innerText = "WINNER: " + winner;
+        }
+    </script>
+</body>
+</html>
